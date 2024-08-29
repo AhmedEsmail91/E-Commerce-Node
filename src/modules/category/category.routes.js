@@ -1,12 +1,9 @@
 import Router from 'express'
-const categoryRouter = Router();
 import categoryController from './category.controller.js'
-import {categoryModel} from '../../../databases/models/category.model.js'
-
-import TruncateTable from '../../utils/TruncateTable.js';
-categoryRouter.route('/categories')
-.post(categoryController.addCategory)
-.get(categoryController.getCategories)
-
-.delete(TruncateTable(categoryModel));
+import TruncateTable from "../../utils/TruncateTable.js"
+import { categoryModel } from '../../../databases/models/category.model.js';
+const categoryRouter = Router();
+// localhost:3000/api/v1/categories --> Already defined in index.routes.js
+categoryRouter.route('/').get(categoryController.getAllCategories).post(categoryController.addCategory).delete(TruncateTable(categoryModel));
+categoryRouter.route('/:id').get(categoryController.getSingleCategory).put(categoryController.updateCategory).delete(categoryController.deleteCategory);
 export default categoryRouter

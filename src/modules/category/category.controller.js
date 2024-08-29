@@ -16,9 +16,28 @@ const addCategory = async (req, res) => {
     res.status(201).json({ message: "success", category });
 };
 
-const getCategories = async (req, res) => {
-    const categories = await categoryModel.find();
-    res.status(200).json(categories);
+const getAllCategories = async (req, res) => {
+    const categories = await categoryModel.find({});
+    !(categories.length>=1) && res.status(404).json({message:"Category not found"});
+    (categories.length >=1) && res.status(200).json({message: "success", categories:categories});
 };
 
-export default {addCategory,getCategories};
+const getSingleCategory = async (req, res) => {
+    const category = await categoryModel.findById(req.params.id);
+    !category && res.status(404).json({message:"Category not found"});
+    category && res.status(200).json({message: "success", category:category});
+};
+const updateCategory = async (req, res) => {
+    req.body.slug = slugify(req.body.name, { lower: true });
+    const category = await categoryModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    !category && res.status(404).json({message:"Category not found"});
+    category && res.status(200).json({message: "success", category:category});
+    
+};
+const deleteCategory = async (req, res) => {
+    const category = await categoryModel.findByIdAndDelete(req.params.id,{new:true});
+    !category && res.status(404).json({message:"Category not found"});
+    category && res.status(200).json({message: "success", category:category});
+};
+
+export default {addCategory,getAllCategories,getSingleCategory,updateCategory,deleteCategory};
