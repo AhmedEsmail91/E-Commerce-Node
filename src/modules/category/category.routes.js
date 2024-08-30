@@ -12,7 +12,7 @@ const categoryRouter = Router();
 categoryRouter.route('/')
 .get(categoryController.getAllCategories)
 
-.post(Upload.uploadSingleFile('img'),
+.post(Upload.uploadSingleFile('image'),
     validate(categoryVal.addCategoryVal),
     categoryController.addCategory)
 

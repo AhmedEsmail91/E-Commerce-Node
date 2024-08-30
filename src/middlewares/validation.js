@@ -4,7 +4,11 @@ import { catchError } from './catchError.js';
 const validation=(schema)=>{
     return async (req, res, next)=>{
     //generalize the input of the validation function to be the request body or the request params.
-    const { error } = schema.validate({...req.params,...req.body,...req.query}, { abortEarly: false });
+    let filter={};
+    req.file && (filter.image=req.file);
+    req.files && (filter.images=req.file);
+    const { error } = schema.validate({...req.params,...req.body,...req.query,...filter}, { abortEarly: false });    
+    
     if (error) {
         console.log(error.details);
         let errMsg=[];

@@ -12,9 +12,6 @@ const schema=new mongoose.Schema({
         lowercase:true,
         required:[true,"SubCategory slug is required"],
     },
-    image:{ 
-        type:String
-    },
     category:{
         type:mongoose.Types.ObjectId,
         ref:"Category"  
