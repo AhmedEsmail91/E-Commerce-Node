@@ -3,4 +3,4 @@ export default function truncate (model){
         await model.deleteMany();
         res.status(200).json({ message: "success" });
     };
-    }
+    } 

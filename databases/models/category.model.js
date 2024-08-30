@@ -20,5 +20,11 @@ const schema=new mongoose.Schema({
         ref:"user"  
     }
 },{timestamps:true});
-
+// schema.pre("save",function(next){
+//     this.image=`http://${process.env.HOST}:${process.env.PORT}/uploads/${this.image}`;
+//     next();
+// })
+schema.post('init',(doc)=>{
+    doc.image=`http://${process.env.HOST}:${process.env.PORT}/uploads/${doc.image}`;
+})
 export const categoryModel=mongoose.model("Category",schema);
