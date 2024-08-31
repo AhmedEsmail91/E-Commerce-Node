@@ -21,4 +21,7 @@ const schema=new mongoose.Schema({
     }
 },{timestamps:true});
 
+schema.post('init',(doc)=>{
+    doc.logo=`http://${process.env.HOST}:${process.env.PORT}/uploads/${doc.logo}`;
+})
 export const brandModel=mongoose.model("Brand",schema);
