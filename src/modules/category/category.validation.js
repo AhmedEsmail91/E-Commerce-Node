@@ -29,7 +29,7 @@ const updateCategoryVal = Joi.object({
         destination: Joi.string().required(),
         filename: Joi.string().required(),
         path: Joi.string().required()
-        }).required(),
+        }),
 });
 
 export default {addCategoryVal,paramsIdVal,updateCategoryVal};

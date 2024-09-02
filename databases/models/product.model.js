@@ -65,7 +65,7 @@ const schema=new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:"SubCategory"  
     },
-    brandId:{
+    brand:{
         type:mongoose.Types.ObjectId,
         ref:"Brand"  
     },
@@ -74,5 +74,14 @@ const schema=new mongoose.Schema({
         ref:"user"  
     }
 },{timestamps:true});
-
+schema.post('init',async (doc)=>{
+    doc.metadata={
+        totalImages:doc.images.length,
+        totalRate:doc.rateCount,
+        totalSold:doc.sold,
+    };
+    console.log(doc);
+    doc.images=doc.images.map((img)=>`http://${process.env.HOST}:${process.env.PORT}/uploads/${img}`);
+    doc.imgCover=`http://${process.env.HOST}:${process.env.PORT}/uploads/${doc.imgCover}`;
+})
 export const productModel=mongoose.model("Product",schema);

@@ -12,11 +12,12 @@ export const fileUpload=()=>{
         cb(null,uuidv4()+'-'+file.originalname);
       }
     })
-    //-------------------File Filter-----------------
-    function fileFilter(req,file,cb){
-      if(file.mimetype.startsWith("image"))cb(null,true);
-      else cb(new AppError('File Type Not Supported',400),false);
-    }
+  //-------------------File Filter-----------------
+  function fileFilter(req,file,cb){
+    // if(file.mimetype.startsWith("image"))cb(null,true);
+    // else cb(new AppError('File Type Not Supported',400),false);
+    cb(null,true);
+  }
 
   return multer({ dest: 'uploads/',storage:storage ,fileFilter:fileFilter})
 }

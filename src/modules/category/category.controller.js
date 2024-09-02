@@ -5,7 +5,7 @@ import { catchError } from "../../middlewares/catchError.js";
 // CRUD Category:
 const addCategory = catchError(async (req, res) => {
     req.body.name && (req.body.slug = slugify(req.body.name, { lower: true }));
-    req.file.filename && (req.body.image = req.file.filename);
+    req.file && (req.body.image = req.file.filename);
     let category= new categoryModel(req.body);
     console.log(category);
     await category.save();
@@ -26,7 +26,7 @@ const getSingleCategory = catchError(async (req, res) => {
 
 const updateCategory = catchError(async (req, res) => {
     req.body.name && (req.body.slug = slugify(req.body.name, { lower: true }));
-    req.file.filename && (req.body.image = req.file.filename);
+    req.file && (req.body.image = req.file.filename);
 
     const category = await categoryModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
     !category && res.status(404).json({message:"Category not found"});
