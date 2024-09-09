@@ -13,8 +13,14 @@ const addsubCategory = catchError(async (req, res) => {
 })
 
 const getAllSubCategories = catchError(async (req, res) => {
-    const SubCategories = await subCategoryModel.find({});
+    // to get all subcategories of a category if the category is provided, otherwise get all subcategories from the main route
+    let filterObj={}
+    req.params.id && (filterObj={category:req.params.id});
+    console.log(filterObj);
+    const SubCategories = await subCategoryModel.find(filterObj).populate("category");
+    
     !(SubCategories.length>=1) && res.status(404).json({message:"SubCategory not found"});
+    
     (SubCategories.length >=1) && res.status(200).json({message: "success",SubCategories:SubCategories});
 })
 

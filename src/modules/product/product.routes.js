@@ -1,4 +1,4 @@
-import Router from 'express'
+import express from 'express'
 import productController from './product.controller.js'
 import TruncateTable from "../../utils/TruncateTable.js"
 import { productModel } from '../../../databases/models/product.model.js';
@@ -6,7 +6,7 @@ import productVal from './product.validation.js';
 import  validate  from '../../middlewares/validation.js';
 import Upload  from '../../services/fileUploads/uploads.js';
 import unique from '../../middlewares/unique.js';
-const productRouter = Router();
+const productRouter = express.Router();
 
 // Raw Route
 productRouter.route('/')

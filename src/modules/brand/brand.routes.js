@@ -1,11 +1,11 @@
-import Router from 'express'
+import express from 'express'
 import brandController from './brand.controller.js'
 import TruncateTable from "../../utils/TruncateTable.js"
 import { brandModel } from '../../../databases/models/brand.model.js';
 import brandVal from './brand.validation.js';
 import  validate  from '../../middlewares/validation.js';
 import Upload  from '../../services/fileUploads/uploads.js';
-const brandRouter = Router();
+const brandRouter = express.Router();
 
 // Raw Route
 brandRouter.route('/')

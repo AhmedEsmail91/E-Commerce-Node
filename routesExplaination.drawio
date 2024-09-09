@@ -1,0 +1,58 @@
+<mxfile host="65bd71144e">
+    <diagram id="pBeWiI2o95fJgp4lmJjT" name="Page-1">
+        <mxGraphModel dx="872" dy="412" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Categories Routes: localhost:port/api/v1/categories" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="195" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Get All &lt;br&gt;Sub-Category Routes as Router: /&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="700" y="195" width="320" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="categoryRouter.use('conacated url',subcategoriesRouter)&lt;br&gt;Specify Category:&lt;br&gt;/:id/subCategories" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="440" y="195" width="180" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="" style="endArrow=none;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="678" y="238.75" as="sourcePoint"/>
+                        <mxPoint x="678" y="221.25" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="678" y="238.75"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="" style="endArrow=none;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="370" y="230" as="sourcePoint"/>
+                        <mxPoint x="390" y="230" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="370" y="230"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="" style="endArrow=none;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="668" y="229.83" as="sourcePoint"/>
+                        <mxPoint x="688" y="229.83" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="668" y="229.83"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="10" value="" style="endArrow=none;html=1;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="380" y="238.75" as="sourcePoint"/>
+                        <mxPoint x="380" y="221.25" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="380" y="238.75"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="11" value="So At the end we can get localhost:port/api/v1/catgories/:id/subcategories/" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="310" y="300" width="440" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

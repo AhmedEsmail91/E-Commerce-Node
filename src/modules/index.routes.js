@@ -3,8 +3,8 @@ import categoryRoutes from './category/category.routes.js'
 import subCategoryRoutes from './subcategory/subcategory.routes.js'
 import brandRoutes from './brand/brand.routes.js'
 import productRoutes from './product/product.routes.js'
-import { productModel } from '../../databases/models/product.model.js';
 import express from 'express';
+
 export const bootstrap=(app)=>{
     // app.get("/",(req,res)=>{
     //     res.send("Hello World!")
@@ -14,6 +14,7 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/subcategories',subCategoryRoutes);
     app.use('/api/v1/brands',brandRoutes);
     app.use('/api/v1/products',productRoutes);
+    
     app.use(globalError);
     // app.get("/schema",(req,res)=>{
     //     res.json(Object.keys(productModel.schema.obj));
