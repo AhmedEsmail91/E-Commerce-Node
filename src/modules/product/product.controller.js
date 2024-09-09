@@ -19,9 +19,31 @@ const getAllProducts = catchError(async (req, res) => {
     // skip=(pageNum-1)*pageLimit
     // ""*1 returns Nan
     let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
-    let pageLimit = 3;
+    let pageLimit = 2;
+    let skip = (pageNum-1)*pageLimit;
+    // shallow copy of req.query this means the assigned variable is passed by reference so if we change the value of filterObj it will also change the value of req.query.
+    // deep copy by value of req.query filterObj={...req.query} for now. is deep copy.
+    // 
+    // ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price -->returns
+    // {
+    //   price: { gte: '100', lte: '200' },
+    //   rating: { gte: '4' },
+    //   sort: 'price'
+    // }
+    let excluded=["page","sort","limit","fields"]; // we just want to filter the products.
+    //deep copy:
+    let filterObj=Object.assign({},req.query);
+    // get the fields to be excluded from the filterObj
+    excluded.forEach((el)=>delete filterObj[el]);  
+    // convert the filterObj to string to replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
+    filterObj=JSON.stringify(filterObj);
+    // replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
+    filterObj=filterObj.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`);
+    // convert the string to object
+    filterObj=JSON.parse(filterObj);
+    console.log(filterObj);
 
-    const products = await productModel.find().skip((pageNum-1)*pageLimit).limit(pageLimit);
+    const products = await productModel.find(filterObj).skip(skip).limit(pageLimit);
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
     (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
 })
