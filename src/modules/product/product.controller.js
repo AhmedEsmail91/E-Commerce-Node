@@ -8,16 +8,22 @@ const addProduct = catchError(async (req, res) => {
     req.body.title && (req.body.slug = slugify(req.body.title, { lower: true }));
     req.body.imgCover=req.files.imgCover[0].filename
     req.body.images=req.files.images.map((file)=>file.filename);
-    
+
     let product= new productModel(req.body);
     await product.save();
     res.status(201).json({ message: "success", product });
 })
 
 const getAllProducts = catchError(async (req, res) => {
-    const products = await productModel.find({});
+    // total number of exist products is : 6.
+    // skip=(pageNum-1)*pageLimit
+    // ""*1 returns Nan
+    let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
+    let pageLimit = 3;
+
+    const products = await productModel.find().skip((pageNum-1)*pageLimit).limit(pageLimit);
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
-    (products.length >=1) && res.status(200).json({message: "success",products:products});
+    (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
 })
 
 const getSingleProduct = catchError(async (req, res) => {
