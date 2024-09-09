@@ -2,6 +2,7 @@
 import { brandModel } from "../../../databases/models/brand.model.js";
 import slugify from "slugify";
 import { catchError } from "../../middlewares/catchError.js";
+import { deleteOne } from "../handlers/handlers.js";
 // CRUD Brand:
 const addBrand = catchError(async (req, res) => {
     req.body.name && (req.body.slug = slugify(req.body.name, { lower: true }));
@@ -33,10 +34,6 @@ const updateBrand = catchError(async (req, res) => {
     brand && res.status(200).json({message: "success", brand:brand});
     
 })
-const deleteBrand = catchError(async (req, res) => {
-    const brand = await brandModel.findByIdAndDelete(req.params.id,{new:true});
-    !brand && res.status(404).json({message:"Brand not found"});
-    brand && res.status(200).json({message: "success", brand:brand});
-})
+const deleteBrand = deleteOne(brandModel);
 
 export default {addBrand,getAllBrands,getSingleBrand,updateBrand,deleteBrand};

@@ -2,6 +2,7 @@
 import { productModel } from "../../../databases/models/product.model.js";
 import slugify from "slugify";
 import { catchError } from "../../middlewares/catchError.js";
+import { deleteOne } from "../handlers/handlers.js";
 // CRUD Product:
 const addProduct = catchError(async (req, res) => {
     req.body.title && (req.body.slug = slugify(req.body.title, { lower: true }));
@@ -34,10 +35,6 @@ const updateProduct = catchError(async (req, res) => {
     product && res.status(200).json({message: "success", product:product});
     
 })
-const deleteProduct = catchError(async (req, res) => {
-    const product = await productModel.findByIdAndDelete(req.params.id,{new:true});
-    !product && res.status(404).json({message:"Product not found"});
-    product && res.status(200).json({message: "success", product:product});
-})
+const deleteProduct = deleteOne(productModel);
 
 export default {addProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct};
