@@ -14,12 +14,12 @@ const addProduct = catchError(async (req, res) => {
     res.status(201).json({ message: "success", product });
 })
 
-const getAllProducts = catchError(async (req, res) => {
+const getAllProducts = catchError(async (req, res,next) => {
     // Pagination Section
-    let pageNum = Math.floor(Math.abs(req.query.page*1||1));
+    let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
     let pageLimit = 2;
     let skip = (pageNum-1)*pageLimit;
-    
+
     // Filtering Section
     // URL--> ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price --> {price:{$gte:100,$lte:200},rating:{$gte:4}}
     let excluded=["page","sort","limit","fields"];
@@ -37,6 +37,11 @@ const getAllProducts = catchError(async (req, res) => {
         // in Sort Clause we can sort by multiple fields by separating them with Space.
         let sortBy=req.query.sort.split(",").join(" ");
         mongooseQuery.sort(sortBy);
+    }
+    // Adding Selected Feilds to Builder Query
+    if(req.query.fields){
+        let fields=req.query.fields.split(",").join(" ");
+        mongooseQuery.select(fields);
     }
     //Executing the Query
     let products=await mongooseQuery;

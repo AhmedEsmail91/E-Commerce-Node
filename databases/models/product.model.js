@@ -75,7 +75,10 @@ const schema=new mongoose.Schema({
     }
 },{timestamps:true});
 schema.post('init',async (doc)=>{
-    doc.images=doc.images.map((img)=>`http://${process.env.HOST}:${process.env.PORT}/uploads/${img}`);
-    doc.imgCover=`http://${process.env.HOST}:${process.env.PORT}/uploads/${doc.imgCover}`;
+    if(doc.images || doc.imgCover){
+        doc.images=doc.images.map((img)=>`http://${process.env.HOST}:${process.env.PORT}/uploads/${img}`);
+        doc.imgCover=`http://${process.env.HOST}:${process.env.PORT}/uploads/${doc.imgCover}`;
+    }
+    return doc;
 })
 export const productModel=mongoose.model("Product",schema);

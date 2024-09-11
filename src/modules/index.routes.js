@@ -15,11 +15,12 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/brands',brandRoutes);
     app.use('/api/v1/products',productRoutes);
     
-    app.use(globalError);
+    
     // app.get("/schema",(req,res)=>{
     //     res.json(Object.keys(productModel.schema.obj));
     // });
     app.use('*',(req,res,next)=>{
         res.status(404).json({message:"Page not found (Wronge URL)"});
     })
+    app.use(globalError);
 }
