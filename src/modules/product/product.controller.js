@@ -17,12 +17,12 @@ const addProduct = catchError(async (req, res) => {
 const getAllProducts = catchError(async (req, res,next) => {
     // Pagination Section
     let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
-    let pageLimit = 2;
+    let pageLimit = 20;
     let skip = (pageNum-1)*pageLimit;
 
     // Filtering Section
     // URL--> ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price --> {price:{$gte:100,$lte:200},rating:{$gte:4}}
-    let excluded=["page","sort","limit","fields"];
+    let excluded=["page","sort","limit","fields","keyword"];
     // exclude the fileds, page,sort and limit to just get the filteration
     // ,cuz the filteration is not categorized in the query.
     let filterObj=Object.assign({},req.query);
@@ -30,7 +30,7 @@ const getAllProducts = catchError(async (req, res,next) => {
     filterObj=JSON.parse(JSON.stringify(filterObj).replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`));
 
     // Query Building Section with Filtering & Pagination.
-    const mongooseQuery = productModel.find(filterObj).skip(skip).limit(pageLimit); 
+    const mongooseQuery = productModel.find(filterObj).skip(skip).limit(pageLimit).select("-_id");
 
     // Adding Sorting to Builder Query
     if(req.query.sort){
@@ -43,8 +43,17 @@ const getAllProducts = catchError(async (req, res,next) => {
         let fields=req.query.fields.split(",").join(" ");
         mongooseQuery.select(fields);
     }
+    if(req.query.keyword){
+        let keyword=req.query.keyword;
+        mongooseQuery.find({$or:[
+            {title:{$regex:keyword,$options:"i"}},
+            {description:{$regex:keyword,$options:"i"}}
+
+        ]});
+        console.log(keyword);
+    }
     //Executing the Query
-    let products=await mongooseQuery;
+    let products=await mongooseQuery
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
     (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
 })
