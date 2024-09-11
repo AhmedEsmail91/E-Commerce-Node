@@ -34,16 +34,26 @@ const getAllProducts = catchError(async (req, res) => {
     //deep copy:
     let filterObj=Object.assign({},req.query);
     // get the fields to be excluded from the filterObj
-    excluded.forEach((el)=>delete filterObj[el]);  
+    excluded.forEach((el)=>delete filterObj[el]);
     // convert the filterObj to string to replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
     filterObj=JSON.stringify(filterObj);
     // replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
     filterObj=filterObj.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`);
     // convert the string to object
     filterObj=JSON.parse(filterObj);
-    console.log(filterObj);
-
-    const products = await productModel.find(filterObj).skip(skip).limit(pageLimit);
+    // console.log(filterObj);
+    //------------------------------Query Building & Sorting-----------------------------------
+    // limit, skip, sort, fields --> functions chaining.
+    //without "await" it's a build query.
+    const mongooseQuery = productModel.find(filterObj).skip(skip).limit(pageLimit); 
+    if(req.query.sort){
+        // by default sort by createdAt in descending order.
+        // in url if we want to sort by price then we will pass sort=price for descending order and -price for ascending order.
+        let sortBy=req.query.sort.split(",").join(" ");
+        console.log(sortBy,req.query.sort);
+        mongooseQuery.sort(sortBy);
+    }
+    let products=await mongooseQuery;
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
     (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
 })
