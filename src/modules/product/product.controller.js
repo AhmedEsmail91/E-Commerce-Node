@@ -15,44 +15,30 @@ const addProduct = catchError(async (req, res) => {
 })
 
 const getAllProducts = catchError(async (req, res) => {
-    // total number of exist products is : 6.
-    // skip=(pageNum-1)*pageLimit
-    // ""*1 returns Nan
-    let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
+    // Pagination Section
+    let pageNum = Math.floor(Math.abs(req.query.page*1||1));
     let pageLimit = 2;
     let skip = (pageNum-1)*pageLimit;
-    // shallow copy of req.query this means the assigned variable is passed by reference so if we change the value of filterObj it will also change the value of req.query.
-    // deep copy by value of req.query filterObj={...req.query} for now. is deep copy.
-    // 
-    // ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price -->returns
-    // {
-    //   price: { gte: '100', lte: '200' },
-    //   rating: { gte: '4' },
-    //   sort: 'price'
-    // }
-    let excluded=["page","sort","limit","fields"]; // we just want to filter the products.
-    //deep copy:
+    
+    // Filtering Section
+    // URL--> ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price --> {price:{$gte:100,$lte:200},rating:{$gte:4}}
+    let excluded=["page","sort","limit","fields"];
+    // exclude the fileds, page,sort and limit to just get the filteration
+    // ,cuz the filteration is not categorized in the query.
     let filterObj=Object.assign({},req.query);
-    // get the fields to be excluded from the filterObj
     excluded.forEach((el)=>delete filterObj[el]);
-    // convert the filterObj to string to replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
-    filterObj=JSON.stringify(filterObj);
-    // replace the gte,gt,lte,lt with $gte,$gt,$lte,$lt
-    filterObj=filterObj.replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`);
-    // convert the string to object
-    filterObj=JSON.parse(filterObj);
-    // console.log(filterObj);
-    //------------------------------Query Building & Sorting-----------------------------------
-    // limit, skip, sort, fields --> functions chaining.
-    //without "await" it's a build query.
+    filterObj=JSON.parse(JSON.stringify(filterObj).replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`));
+
+    // Query Building Section with Filtering & Pagination.
     const mongooseQuery = productModel.find(filterObj).skip(skip).limit(pageLimit); 
+
+    // Adding Sorting to Builder Query
     if(req.query.sort){
-        // by default sort by createdAt in descending order.
-        // in url if we want to sort by price then we will pass sort=price for descending order and -price for ascending order.
+        // in Sort Clause we can sort by multiple fields by separating them with Space.
         let sortBy=req.query.sort.split(",").join(" ");
-        console.log(sortBy,req.query.sort);
         mongooseQuery.sort(sortBy);
     }
+    //Executing the Query
     let products=await mongooseQuery;
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
     (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
