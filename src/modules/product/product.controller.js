@@ -3,6 +3,7 @@ import { productModel } from "../../../databases/models/product.model.js";
 import slugify from "slugify";
 import { catchError } from "../../middlewares/catchError.js";
 import { deleteOne } from "../handlers/handlers.js";
+import { ApiFeatures } from "../../utils/apiFeatures.js";
 // CRUD Product:
 const addProduct = catchError(async (req, res) => {
     req.body.title && (req.body.slug = slugify(req.body.title, { lower: true }));
@@ -15,47 +16,13 @@ const addProduct = catchError(async (req, res) => {
 })
 
 const getAllProducts = catchError(async (req, res,next) => {
-    // Pagination Section
-    let pageNum = Math.ceil(Math.abs(req.query.page*1||1));
-    let pageLimit = 20;
-    let skip = (pageNum-1)*pageLimit;
-
-    // Filtering Section
-    // URL--> ?price[gte]=100&price[lte]=200&rating[gte]=4&sort=price --> {price:{$gte:100,$lte:200},rating:{$gte:4}}
-    let excluded=["page","sort","limit","fields","keyword"];
-    // exclude the fileds, page,sort and limit to just get the filteration
-    // ,cuz the filteration is not categorized in the query.
-    let filterObj=Object.assign({},req.query);
-    excluded.forEach((el)=>delete filterObj[el]);
-    filterObj=JSON.parse(JSON.stringify(filterObj).replace(/\b(gte|gt|lte|lt)\b/g,match=>`$${match}`));
-
-    // Query Building Section with Filtering & Pagination.
-    const mongooseQuery = productModel.find(filterObj).skip(skip).limit(pageLimit).select("-_id");
-
-    // Adding Sorting to Builder Query
-    if(req.query.sort){
-        // in Sort Clause we can sort by multiple fields by separating them with Space.
-        let sortBy=req.query.sort.split(",").join(" ");
-        mongooseQuery.sort(sortBy);
-    }
-    // Adding Selected Feilds to Builder Query
-    if(req.query.fields){
-        let fields=req.query.fields.split(",").join(" ");
-        mongooseQuery.select(fields);
-    }
-    if(req.query.keyword){
-        let keyword=req.query.keyword;
-        mongooseQuery.find({$or:[
-            {title:{$regex:keyword,$options:"i"}},
-            {description:{$regex:keyword,$options:"i"}}
-
-        ]});
-        console.log(keyword);
-    }
-    //Executing the Query
-    let products=await mongooseQuery
+    
+    const apiFeatures = new ApiFeatures(productModel.find(), req.query);
+    apiFeatures.pagination(10).filteration().sort().fields().search();
+    let products = await apiFeatures.mongooseQuery;
+    
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
-    (products.length >=1) && res.status(200).json({message: "success",page:pageNum,products:products});
+    (products.length >=1) && res.status(200).json({message: "success",page:apiFeatures.pageNum,products:products});
 })
 
 const getSingleProduct = catchError(async (req, res) => {

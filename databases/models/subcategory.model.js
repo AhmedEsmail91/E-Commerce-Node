@@ -22,4 +22,8 @@ const schema=new mongoose.Schema({
     }
 },{timestamps:true});
 
+schema.pre("find",function(next){
+    this.populate("category");
+    next();
+})
 export const subCategoryModel=mongoose.model("SubCategory",schema);

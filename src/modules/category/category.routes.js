@@ -10,7 +10,7 @@ import subCategoryRouter from '../subcategory/subcategory.routes.js';
 const categoryRouter = express.Router();
 //Getting all subCategories of a category
 // we add it here to make the route /categories/:id/subcategories and categories router already has a pre-fix of /categories
-categoryRouter.use('/:id/subcategories/',subCategoryRouter);
+categoryRouter.use('/:category/subcategories/',subCategoryRouter);
 
 // categoryRouter --> this provide a route for /api/v1/categories for the url, then after adding the ret of url we can add another route which provides all of its routes name
 // in the subcategory.routes.js we have:

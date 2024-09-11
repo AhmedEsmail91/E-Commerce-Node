@@ -3,6 +3,7 @@ import { categoryModel } from "../../../databases/models/category.model.js";
 import slugify from "slugify";
 import { catchError } from "../../middlewares/catchError.js";
 import { deleteOne } from "../handlers/handlers.js";
+import { ApiFeatures } from "../../utils/apiFeatures.js";
 // CRUD Category:
 const addCategory = catchError(async (req, res) => {
     req.body.name && (req.body.slug = slugify(req.body.name, { lower: true }));
@@ -14,7 +15,11 @@ const addCategory = catchError(async (req, res) => {
 })
 
 const getAllCategories = catchError(async (req, res) => {
-    const categories = await categoryModel.find({});
+    
+    const apiFeatures = new ApiFeatures(categoryModel.find(), req.query);
+    apiFeatures.pagination(10).filteration().sort().fields().search();
+    let categories = await apiFeatures.mongooseQuery;
+    
     !(categories.length>=1) && res.status(404).json({message:"Category not found"});
     (categories.length >=1) && res.status(200).json({message: "success",categories:categories});
 })
