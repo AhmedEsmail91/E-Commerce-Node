@@ -6,4 +6,4 @@ export const deleteOne=(model)=>{
         !Document && res.status(404).json({message:"Document not found"});
         Document && res.status(200).json({message: "success", Document:Document});
     })
-}
+} 
