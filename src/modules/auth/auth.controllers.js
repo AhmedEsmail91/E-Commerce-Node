@@ -70,13 +70,24 @@ const protectedRoute = catchError(async (req, res, next) => {
         if(timeChanged>decoded.iat) return (next(new AppError("Token is invalid... login again",401)));
     }
     req.user=user;
-    next();
+    return next();
+});
 
-})
-
+const allowedTo=(...roles)=>{
+    return catchError(
+        async (req,res,next)=>{
+            let currentUserRole=req.user.role;
+            if(!roles.includes(currentUserRole)){
+                return next(new AppError("You are not allowed to access this route",403));
+            }
+            next();
+        }
+    )
+}
 export {
     signup, 
     signin,
     changePassword,
-    protectedRoute
+    protectedRoute,
+    allowedTo
 }
