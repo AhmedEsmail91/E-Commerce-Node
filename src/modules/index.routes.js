@@ -4,6 +4,8 @@ import subCategoryRoutes from './subcategory/subcategory.routes.js'
 import brandRoutes from './brand/brand.routes.js'
 import productRoutes from './product/product.routes.js'
 import express from 'express';
+import usersRouter from './user/user.routes.js';
+import authRouter from './auth/auth.routes.js';
 
 export const bootstrap=(app)=>{
     // app.get("/",(req,res)=>{
@@ -14,6 +16,8 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/subcategories',subCategoryRoutes);
     app.use('/api/v1/brands',brandRoutes);
     app.use('/api/v1/products',productRoutes);
+    app.use('/api/v1/users',usersRouter);
+    app.use('/api/v1/auth',authRouter);
     
     
     // app.get("/schema",(req,res)=>{

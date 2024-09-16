@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 const schema=new mongoose.Schema({
     name:{
         type:String,
@@ -23,16 +24,29 @@ const schema=new mongoose.Schema({
         type:Boolean,
         default:false
     },
-    confimEmail:{
+    confirmEmail:{
         type:Boolean,
         default:false
     },
     role:{
         type:String,
         enum:["user","admin"],
-        default:"user"
-    }
+        default:"user",
+        lowercase:true
+    },
+    passwordChangedAt:Date
     
 },{timestamps:true});
-
+schema.pre("save",function(next){
+    this.password=bcrypt.hashSync(this.password,8);
+    next();
+})
+// hashing password before update
+schema.pre('findOneAndUpdate',async function(next) {
+    if (!this._update.password) {
+        return next();
+    }
+    this._update.password = bcrypt.hashSync(this._update.password,8);
+    next();
+});
 export const userModel=mongoose.model("User",schema);

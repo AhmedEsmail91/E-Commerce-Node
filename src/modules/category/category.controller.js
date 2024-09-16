@@ -15,9 +15,9 @@ const addCategory = catchError(async (req, res) => {
 })
 
 const getAllCategories = catchError(async (req, res) => {
-    
+    // window.localStorage.setItem('token', 15615);
     const apiFeatures = new ApiFeatures(categoryModel.find(), req.query);
-    apiFeatures.pagination(10).filteration().sort().fields().search();
+    apiFeatures.pagination(10).filtration().sort().fields().search();
     let categories = await apiFeatures.mongooseQuery;
     
     !(categories.length>=1) && res.status(404).json({message:"Category not found"});

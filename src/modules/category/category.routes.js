@@ -7,6 +7,7 @@ import  validate  from '../../middlewares/validation.js';
 import Upload  from '../../services/fileUploads/uploads.js';
 import unique from '../../middlewares/unique.js';
 import subCategoryRouter from '../subcategory/subcategory.routes.js';
+import { protectedRoute } from '../auth/auth.controllers.js';
 const categoryRouter = express.Router();
 //Getting all subCategories of a category
 // we add it here to make the route /categories/:id/subcategories and categories router already has a pre-fix of /categories
@@ -26,7 +27,7 @@ categoryRouter.use('/:category/subcategories/',subCategoryRouter);
 categoryRouter.route('/')
 .get(categoryController.getAllCategories)
 
-.post(Upload.uploadSingleFile('image'),
+.post(protectedRoute,Upload.uploadSingleFile('image'),
     validate(categoryVal.addCategoryVal),
     categoryController.addCategory)
 
@@ -37,11 +38,11 @@ categoryRouter.route('/:id')
 .get(validate(categoryVal.paramsIdVal),
     categoryController.getSingleCategory)
     
-.put(Upload.uploadSingleFile('img'),
+.put(protectedRoute,Upload.uploadSingleFile('img'),
     validate(categoryVal.updateCategoryVal),
     categoryController.updateCategory)
 
-.delete(validate(categoryVal.paramsIdVal),
+.delete(protectedRoute,validate(categoryVal.paramsIdVal),
     categoryController.deleteCategory);
 
 export default categoryRouter

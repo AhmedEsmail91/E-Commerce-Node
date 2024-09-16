@@ -16,7 +16,7 @@ const addBrand = catchError(async (req, res) => {
 
 const getAllBrands = catchError(async (req, res) => {
     const apiFeatures = new ApiFeatures(brandModel.find(), req.query);
-    apiFeatures.pagination(10).filteration().sort().fields().search();
+    apiFeatures.pagination(10).filtration().sort().fields().search();
     let brands = await apiFeatures.mongooseQuery;
     
     !(brands.length>=1) && res.status(404).json({message:"Brand not found"});

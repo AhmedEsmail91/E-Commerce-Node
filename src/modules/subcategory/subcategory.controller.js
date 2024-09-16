@@ -20,7 +20,7 @@ const getAllSubCategories = catchError(async (req, res) => {
     req.params.category && (filterObj={category:req.params.category});
     console.log(req.params);
     const apiFeatures = new ApiFeatures(subCategoryModel.find(filterObj), req.query);
-    apiFeatures.pagination(10).filteration().sort().fields().search();
+    apiFeatures.pagination(10).filtration().sort().fields().search();
     
     let SubCategories = await apiFeatures.mongooseQuery;
 

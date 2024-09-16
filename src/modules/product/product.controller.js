@@ -18,7 +18,7 @@ const addProduct = catchError(async (req, res) => {
 const getAllProducts = catchError(async (req, res,next) => {
     
     const apiFeatures = new ApiFeatures(productModel.find(), req.query);
-    apiFeatures.pagination(10).filteration().sort().fields().search();
+    apiFeatures.pagination(10).filtration().sort().fields().search();
     let products = await apiFeatures.mongooseQuery;
     
     !(products.length>=1) && res.status(404).json({message:"Product not found"});
