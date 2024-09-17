@@ -9,7 +9,7 @@ const addsubCategory = catchError(async (req, res) => {
     req.file && (req.body.image = req.file.filename);
     req.body.slug=slugify(req.body.name,{lower:true});
     let subCategory= new subCategoryModel(req.body);
-    console.log(subCategory);
+    // console.log(subCategory);
     await subCategory.save();
     res.status(201).json({ message: "success", subCategory });
 })
@@ -18,7 +18,7 @@ const getAllSubCategories = catchError(async (req, res) => {
     // to get all subcategories of a category if the category is provided, otherwise get all subcategories from the main route
     let filterObj={}
     req.params.category && (filterObj={category:req.params.category});
-    console.log(req.params);
+    // console.log(req.params);
     const apiFeatures = new ApiFeatures(subCategoryModel.find(filterObj), req.query);
     apiFeatures.pagination(10).filtration().sort().fields().search();
     

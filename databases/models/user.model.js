@@ -34,19 +34,29 @@ const schema=new mongoose.Schema({
         default:"user",
         lowercase:true
     },
-    passwordChangedAt:Date
-    
+    passwordChangedAt:Date,
+    wishList:{
+        type:[mongoose.Types.ObjectId],
+        ref:"Product"
+    },
+    addresses:[
+        {
+            street:String,
+            phone:String,
+            city:String
+        }
+    ]
 },{timestamps:true});
 schema.pre("save",function(next){
-    this.password=bcrypt.hashSync(this.password,8);
+    if(this.password) this.password=bcrypt.hashSync(this.password,8);
     next();
 })
 // hashing password before update
 schema.pre('findOneAndUpdate',async function(next) {
-    if (!this._update.password) {
-        return next();
+    if (this._update.password) {
+        this._update.password = bcrypt.hashSync(this._update.password,8);
+        next()
     }
-    this._update.password = bcrypt.hashSync(this._update.password,8);
     next();
 });
 export const userModel=mongoose.model("User",schema);

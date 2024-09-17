@@ -9,7 +9,7 @@ const addBrand = catchError(async (req, res) => {
     req.body.name && (req.body.slug = slugify(req.body.name, { lower: true }));
     req.file && (req.body.logo = req.file.filename);
     let brand= new brandModel(req.body);
-    console.log(brand);
+    // console.log(brand);
     await brand.save();
     res.status(201).json({ message: "success", brand });
 })

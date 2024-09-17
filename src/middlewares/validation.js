@@ -7,15 +7,15 @@ const validation=(schema)=>{
     let filter={};
     if(req.file){
         filter={image:req.file,...req.body,...req.params,...req.query};
-        console.log({file:true,fields:filter})
+        //console.log({file:true,fields:filter})
     }
     else if(req.files){
         filter={...req.files,...req.body,...req.params,...req.query};
-        console.log({files:true,fields:filter})
+        //console.log({file:true,fields:filter})
     }
     else{
         filter={...req.body,...req.params,...req.query};
-        console.log({raw:true,fields:filter})
+        //console.log({file:true,fields:filter})
     }
     const {error} = await schema.validate(filter, { abortEarly: false });
 

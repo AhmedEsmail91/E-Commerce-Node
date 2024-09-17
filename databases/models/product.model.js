@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import conn from "../dbConnection.js";
-import { MAX } from "uuid";
+
 const schema=new mongoose.Schema({
     title:{
         type:String,
@@ -22,7 +21,7 @@ const schema=new mongoose.Schema({
         minLength:[20,"Product description must be at least 20 characters"],
         maxLength:[1000,"Product description must be at most 1000 characters"],
     },
-    imgCover:{
+    imgCover:{  
         type:String
     },
     images:{
@@ -74,6 +73,14 @@ const schema=new mongoose.Schema({
         ref:"user"  
     }
 },{timestamps:true});
+// making virtual populate for reviews to the product
+// select * from products join reviews on products._id=reviews.product
+schema.virtual('Reviews',{
+    ref:'Review',
+    foreignField:'product',// the field which is joining the two collections
+    localField:'_id' // the field which is in the same collection
+})
+
 schema.post('init',async (doc)=>{
     if(doc.images || doc.imgCover){
         doc.images=doc.images.map((img)=>`http://${process.env.HOST}:${process.env.PORT}/uploads/${img}`);

@@ -6,7 +6,10 @@ import productRoutes from './product/product.routes.js'
 import express from 'express';
 import usersRouter from './user/user.routes.js';
 import authRouter from './auth/auth.routes.js';
-import reviewRouter from './subcategory copy/review.routes.js';
+import reviewRouter from './review/review.routes.js';
+import wishListRouter from './wishlist/wishlist.routes.js';
+import AddressRouter from './address/address.routes.js';
+import couponRouter from './coupon/coupon.routes.js';
 
 export const bootstrap=(app)=>{
     // app.get("/",(req,res)=>{
@@ -20,6 +23,9 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/users',usersRouter);
     app.use('/api/v1/auth',authRouter);
     app.use('/api/v1/reviews',reviewRouter);
+    app.use('/api/v1/wishlist',wishListRouter);
+    app.use('/api/v1/addresses',AddressRouter);
+    app.use('/api/v1/coupons',couponRouter);
     
     
     // app.get("/schema",(req,res)=>{

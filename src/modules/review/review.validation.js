@@ -1,21 +1,4 @@
 import Joi from 'joi';
-/**
- * text:{
-        type:String,
-        trim:true,
-        minLength:[10,"Review text must be at least 10 characters"],
-    },
-    user:{
-        type:mongoose.Types.ObjectId,
-        ref:"User"
-    },
-    product:{
-        type:mongoose.Types.ObjectId,
-        ref:"Product"
-    },
-    
- */
-
 const addReviewVal= Joi.object({
     text: Joi.string().min(5).max(200).required().trim(),
     rate: Joi.number().min(0).max(5).required(),
