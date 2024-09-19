@@ -72,15 +72,18 @@ const schema=new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:"user"  
     }
-},{timestamps:true});
+},{timestamps:true,toJSON:{virtuals:true}});
 // making virtual populate for reviews to the product
 // select * from products join reviews on products._id=reviews.product
 schema.virtual('Reviews',{
     ref:'Review',
     foreignField:'product',// the field which is joining the two collections
-    localField:'_id' // the field which is in the same collection
+    localField:'_id', // the field which is in the same collection
+    // justOne:false // if we want to get one review or multiple reviews
 })
-
+schema.pre('findOne',function(){
+    this.populate('Reviews');
+})
 schema.post('init',async (doc)=>{
     if(doc.images || doc.imgCover){
         doc.images=doc.images.map((img)=>`http://${process.env.HOST}:${process.env.PORT}/uploads/${img}`);

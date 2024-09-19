@@ -25,6 +25,6 @@ const schema=new mongoose.Schema({
 // })  
 // or simply use RegEx:
 schema.pre(/^find/,function(){
-   this.populate('user','name -_id').populate('product','title -_id');
+   this.populate('user','name -_id').populate('product','title _id');
 })
 export const reviewModel=mongoose.model("Review",schema);

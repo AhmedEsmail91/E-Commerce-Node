@@ -16,6 +16,13 @@ const schema=new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:"user"  
     }
-},{timestamps:true});
-
+},{timestamps:true,toJSON:{virtuals:true}});
+schema.virtual('carts',{
+    ref:'Cart',
+    localField:'_id',
+    foreignField:'coupon'
+});
+schema.pre('findOne',function(){
+    this.populate('carts','_id, carts');
+})
 export const couponModel=mongoose.model("Coupon",schema);

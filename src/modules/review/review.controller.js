@@ -14,8 +14,8 @@ const addReview = catchError(async (req, res,next) => {
 })
 
 const getAllReview = catchError(async (req, res) => {
-    const apiFeatures = new ApiFeatures(reviewModel.find({}), req.query).
-    pagination(10).filtration().sort().fields().search();
+    const apiFeatures = new ApiFeatures(reviewModel.find({}), req.query)
+    .pagination(10).filtration().sort().fields().search();
 
     let Review = await apiFeatures.mongooseQuery;
     !(Review.length>=1) && res.status(404).json({message:"review not found"});

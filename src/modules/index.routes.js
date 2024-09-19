@@ -10,6 +10,7 @@ import reviewRouter from './review/review.routes.js';
 import wishListRouter from './wishlist/wishlist.routes.js';
 import AddressRouter from './address/address.routes.js';
 import couponRouter from './coupon/coupon.routes.js';
+import CartRouter from './cart/cart.routes.js';
 
 export const bootstrap=(app)=>{
     // app.get("/",(req,res)=>{
@@ -26,6 +27,7 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/wishlist',wishListRouter);
     app.use('/api/v1/addresses',AddressRouter);
     app.use('/api/v1/coupons',couponRouter);
+    app.use('/api/v1/carts',CartRouter);
     
     
     // app.get("/schema",(req,res)=>{
