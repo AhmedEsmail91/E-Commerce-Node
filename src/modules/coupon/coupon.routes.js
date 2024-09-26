@@ -12,7 +12,7 @@ import { protectedRoute,allowedTo } from '../auth/auth.controllers.js';
 const couponRouter = express.Router({mergeParams:true});
 
 //Protected Route and AllowedTo Middleware for all routes
-couponRouter.use(protectedRoute, allowedTo('admin'));
+couponRouter.use(protectedRoute, allowedTo('admin','user'));
 
 // Raw Route
 couponRouter.route('/')

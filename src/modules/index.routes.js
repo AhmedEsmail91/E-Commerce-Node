@@ -11,11 +11,11 @@ import wishListRouter from './wishlist/wishlist.routes.js';
 import AddressRouter from './address/address.routes.js';
 import couponRouter from './coupon/coupon.routes.js';
 import CartRouter from './cart/cart.routes.js';
+import OrderRouter from './order/order.routes.js';
+
 
 export const bootstrap=(app)=>{
-    // app.get("/",(req,res)=>{
-    //     res.send("Hello World!")
-    // });
+    
     app.use('/uploads', express.static('uploads'));
     app.use('/api/v1/categories',categoryRoutes);
     app.use('/api/v1/subcategories',subCategoryRoutes);
@@ -28,6 +28,7 @@ export const bootstrap=(app)=>{
     app.use('/api/v1/addresses',AddressRouter);
     app.use('/api/v1/coupons',couponRouter);
     app.use('/api/v1/carts',CartRouter);
+    app.use('/api/v1/orders',OrderRouter);
     
     
     // app.get("/schema",(req,res)=>{

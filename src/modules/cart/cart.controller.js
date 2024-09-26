@@ -149,16 +149,32 @@ const applyCoupon = catchError(async (req, res, next) => {
     // check if the coupon is already applied
     if(cart.coupon) return next(new AppError("Coupon already applied",400));
     // apply the coupon to the cart
+    cart.coupon = coupon._id;
+    cart.discount = coupon.discount;
     calcAfterDiscountOnCall(cart);
     await cart.save();
     res.json({message:"success",cart});
 });
-
+const removeCouponFromCart=catchError(async (req,res,next)=>{
+    // check the existence of the cart
+    console.log(req.user._id);
+    let cart = await cartModel.findOne({user:req.user._id});
+    if(!cart) return next(new AppError("Cart not found",404));
+    // check if the coupon is already applied
+    if(!cart.coupon) return next(new AppError("No coupon applied",400));
+    // remove the coupon from the cart
+    cart.coupon = undefined;
+    cart.discount = 0;
+    calcAfterDiscountOnCall(cart);
+    await cart.save();
+    res.json({message:"success",cart});
+})
 export default {
   addToCart,
   removeFromCart,
   updateQuantity,
   getLoggedUserCartes,
   clearUserCart,
-  applyCoupon
+  applyCoupon,
+  removeCouponFromCart
 };

@@ -23,7 +23,7 @@ const signin = catchError(async (req, res,next) => {
     if (user && bcrypt.compareSync(req.body.password,user.password,8)) {
         //Assign a token to the user
         let token = jwt.sign({ userId: user._id ,role:user.role}, process.env.JWT_SECRET_KEY)
-        res.json({ message: "success", token })
+        res.json({ message: "success", token,port:parseInt(process.env.PORT),role:user.role })
     }
     else{
         next(new AppError("Invalid email or password", 401))
@@ -84,6 +84,7 @@ const allowedTo=(...roles)=>{
         }
     )
 }
+
 export {
     signup, 
     signin,

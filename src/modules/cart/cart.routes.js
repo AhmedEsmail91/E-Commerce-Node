@@ -14,6 +14,8 @@ CartRouter.route('/')
 .delete(CartController.clearUserCart)
 // Apply Coupon
 CartRouter.post('/applyCoupon', validate(cartVal.addCouponVal), CartController.applyCoupon);
+// Remove Coupon
+CartRouter.delete('/removeCoupon', CartController.removeCouponFromCart);
 
 
 
