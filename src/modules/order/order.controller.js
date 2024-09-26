@@ -5,6 +5,8 @@ import { productModel } from "../../../databases/models/product.model.js";
 import {orderModel} from "../../../databases/models/order.model.js";
 import { sendEmail } from "../../services/emails/sendEmail.js";
 import jwt from "jsonwebtoken"; 
+import Stripe from 'stripe';
+const stripe = new Stripe("sk_test_51Q3FuBRsrwmfX15h12KPyTIJQUiQFHJlapXkfzhV9COOHkrGywFH9DLgn9riPjeEvPhFu16m4PTP7RFIWsQaJ9Hf00iqLuFy7E");
 // OrderSchema:
 /* 
   ["user","orderItems","totalOrderPrice","shippingAddress",
@@ -70,4 +72,34 @@ const getAllOrders=catchError(async (req,res,next)=>{
   let orders=await orderModel.find();
   res.status(200).json(orders)
 });
-export default { createCashOrder,getUserOrder,getAllOrders}; 
+const createCheckOutSession=catchError(async(req,res,next)=>{
+  let cart=await cartModel.findOne({user:req.user._id});
+  if(!cart) return next(new AppError("Cart not found", 404));
+
+  let session=await stripe.checkout.sessions.create({
+    line_items:[{
+      price_data:{
+        currency:'egp',
+        unit_amount:cart.totalPriceAfterDiscount*100,
+        product_data:{
+          name:req.user.name
+          // image:cart.cartItems[0].image,
+          
+        },
+        
+      },
+      quantity:1
+    }],
+    mode:'payment',// payment--> one time payment or setup --> Save Payment Detail to charge the customer later or subscription-->monthly payment for example
+    success_url:"https://route-comm.netlify.app/#/",// redirect to this url after successful payment in front end.
+    cancel_url:"https://route-comm.netlify.app/#/cart",// redirect to this url after cancel payment in front end.
+    customer_email:req.user.email,
+    client_reference_id:cart._id.toString(),
+    metadata:{
+      shippingAddress:req.body.shippingAddress.toString(),
+      userId:req.user._id.toString()
+    }
+  })
+  res.status(200).json({status:"success",session})
+})
+export default { createCashOrder,getUserOrder,getAllOrders,createCheckOutSession}; 

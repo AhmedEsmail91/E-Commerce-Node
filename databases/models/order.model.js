@@ -69,7 +69,7 @@ schema.virtual('Product',{
 })
 schema.pre('findOne',function(){
     this.populate('Product');
-    console.log(this)
+    // console.log(this)
 })
 schema.pre('findAndUpdate', function () {
     this.totalPrice = this.cartItems.reduce((acc, curr) => acc + curr.price, 0);
