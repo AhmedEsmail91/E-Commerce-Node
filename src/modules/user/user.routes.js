@@ -7,13 +7,13 @@ import  validate  from '../../middlewares/validation.js';
 import { checkMail } from '../../middlewares/checkMail.js';
 import { allowedTo,protectedRoute } from '../auth/auth.controllers.js';
 const usersRouter = express.Router();
-
+// usersRouter.use(protectedRoute,allowedTo('admin'));
 // Raw Route
 usersRouter.route('/')
 .post(validate(usersVal.addUser),checkMail,
     userController.addUser)
 
-.get(protectedRoute,allowedTo('admin'),userController.getAllUsers)
+.get(userController.getAllUsers)
 
 .delete(TruncateTable(userModel));
 
