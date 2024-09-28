@@ -125,7 +125,8 @@ const createOnlineOrder=catchError(async (req, res,next) => {
     
       if(event.type==="checkout.session.completed"){
         console.log("Order Completed")
-          card(req,res,next,event.data.payment_method_types);
+          card(event.data.object);
+
           console.log("Order Completed",event.toString())
           res.status(200).json({received: true, order,event});
           }
@@ -135,23 +136,18 @@ const createOnlineOrder=catchError(async (req, res,next) => {
           }
     // Return a 200 res to acknowledge receipt of the event
   });
-const card= async(req,res,next,method=null)=>{
-  //ToDo:
-          // 1- Check if the user has a cart
-          // 2- Create a new order with total order price from the cart items
-          // 3- increment the product sold field in the product collection, and decrement the quantity field
-          // 4- Empty the cart
-          // 5- Send the order details to the user
-
-          let cart=await cartModel.findOne({user:req.user._id});
+const card= async(e)=>{
+          let cart=await cartModel.findById(e.client_reference_id);
           if(!cart) return next(new AppError("Cart not found", 404));
-
+          let user=await userModel.findOne({email:e.customer_email});
           let order=new orderModel({
-            user:req.user._id,
+            user:user._id,
             orderItems:cart.cartItems,
-            totalOrderPrice:cart.totalPriceAfterDiscount,
-            shippingAddress:req.body.shippingAddress,
-            paymentType:method||'cash'
+            totalOrderPrice:e.amount_total/100,
+            shippingAddress:e.metadata.shippingAddress,
+            paymentType:'card',
+            isPaid:true,
+            paidAt:Date.now(),
           });
           order=await order.save();
           let options=cart.cartItems.map(item=>{
@@ -163,7 +159,7 @@ const card= async(req,res,next,method=null)=>{
             }
           })// options return array of operations to be done on the products
           await productModel.bulkWrite(options)
-          await cartModel.findOneAndDelete({ user: req.user._id });
+          await cartModel.findOneAndDelete({user:user._id}); 
           
 }
 export default { createCashOrder,getUserOrder,getAllOrders,createCheckOutSession,createOnlineOrder}; 
