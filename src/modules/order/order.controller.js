@@ -103,7 +103,7 @@ const createCheckOutSession=catchError(async(req,res,next)=>{
   res.status(200).json({status:"success",session})
 })
 
-const createOnlineOrder=catchError(async (req, res) => {
+const createOnlineOrder=catchError(async (req, res,next) => {
     let endpointSecret = 'whsec_zPfbrjM3IIgu7I9ckBDAV1SuPSi2CJtq';
     let event = req.body;
     // Only verify the event if you have an endpoint secret defined.
@@ -125,7 +125,7 @@ const createOnlineOrder=catchError(async (req, res) => {
     
       if(event.type==="checkout.session.completed"){
         console.log("Order Completed")
-          card(event.data.payment_method_types);
+          card(req,res,next,event.data.payment_method_types);
           console.log("Order Completed",event.toString())
           res.status(200).json({received: true, order,event});
           }
@@ -135,7 +135,7 @@ const createOnlineOrder=catchError(async (req, res) => {
           }
     // Return a 200 res to acknowledge receipt of the event
   });
-const card= async(method=null)=>{
+const card= async(req,res,next,method=null)=>{
   //ToDo:
           // 1- Check if the user has a cart
           // 2- Create a new order with total order price from the cart items
