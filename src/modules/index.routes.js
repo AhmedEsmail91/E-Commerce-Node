@@ -15,7 +15,6 @@ import OrderRouter from './order/order.routes.js';
 
 
 export const bootstrap=(app)=>{
-    
     app.use('/uploads', express.static('uploads'));
     app.use('/api/v1/categories',categoryRoutes);
     app.use('/api/v1/subcategories',subCategoryRoutes);

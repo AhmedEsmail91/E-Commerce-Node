@@ -4,6 +4,7 @@ import {bootstrap} from './src/modules/index.routes.js'
 import dotenv from 'dotenv'
 import chalk from 'chalk';
 import cors from 'cors'
+import Orders from './src/modules/order/order.controller.js'
 const port=3000
 dotenv.config();
 const app = express()
@@ -16,6 +17,7 @@ app.use(cors(
         methods: ['GET','POST','PUT','DELETE']
     }
 ))
+app.post('/webhook', express.raw({type: 'application/json'}),Orders.createOnlineOrder);
 app.use(express.json());
 bootstrap(app);
 dbConnection();
