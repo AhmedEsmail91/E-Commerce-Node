@@ -103,7 +103,7 @@ const createCheckOutSession=catchError(async(req,res,next)=>{
   res.status(200).json({status:"success",session})
 })
 
-const createOnlineOrder=catchError((req, res) => {
+const createOnlineOrder=catchError(async (req, res) => {
     let endpointSecret = 'whsec_zPfbrjM3IIgu7I9ckBDAV1SuPSi2CJtq';
     let event = req.body;
     // Only verify the event if you have an endpoint secret defined.
@@ -125,14 +125,41 @@ const createOnlineOrder=catchError((req, res) => {
     
       if(event.type==="checkout.session.completed"){
         console.log("Order Completed")
-        console.log("RawData::"+event.data)
-        console.log("DataObject::"+event.data.object)
+            //ToDo:
+          // 1- Check if the user has a cart
+          // 2- Create a new order with total order price from the cart items
+          // 3- increment the product sold field in the product collection, and decrement the quantity field
+          // 4- Empty the cart
+          // 5- Send the order details to the user
 
-      }
-      else{
-        console.log(`Unhandled event type ${event.type}.`);
-      }
+          let cart=await cartModel.findOne({user:req.user._id});
+          if(!cart) return next(new AppError("Cart not found", 404));
+
+          let order=new orderModel({
+            user:req.user._id,
+            orderItems:cart.cartItems,
+            totalOrderPrice:cart.totalPriceAfterDiscount,
+            shippingAddress:req.body.shippingAddress,
+            paymentType:'cash'
+          });
+          order=await order.save();
+          let options=cart.cartItems.map(item=>{
+            return {
+              updateOne:{
+                filter:{_id:item.product},
+                update:{$inc:{sold:item.quantity,quantity:-1*item.quantity}}
+              }
+            }
+          })// options return array of operations to be done on the products
+          await productModel.bulkWrite(options)
+          await cartModel.findOneAndDelete({ user: req.user._id });
+          res.status(200).json({received: true, order,event});
+          }
+          else{
+            console.log(`Unhandled event type ${event.type}.`);
+            res.sendStatus(403);
+          }
     // Return a 200 res to acknowledge receipt of the event
-    res.status(200).send();
+    
   });
 export default { createCashOrder,getUserOrder,getAllOrders,createCheckOutSession,createOnlineOrder}; 
