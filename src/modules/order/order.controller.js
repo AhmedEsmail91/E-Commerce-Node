@@ -3,6 +3,7 @@ import AppError from "../../utils/AppError.js";
 import { cartModel } from "../../../databases/models/cart.model.js";
 import { productModel } from "../../../databases/models/product.model.js";
 import {orderModel} from "../../../databases/models/order.model.js";
+import {userModel} from "../../../databases/models/user.model.js";
 import { sendEmail } from "../../services/emails/sendEmail.js";
 import jwt from "jsonwebtoken"; 
 import Stripe from 'stripe';
