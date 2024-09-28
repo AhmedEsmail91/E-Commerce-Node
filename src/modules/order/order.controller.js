@@ -125,7 +125,18 @@ const createOnlineOrder=catchError(async (req, res) => {
     
       if(event.type==="checkout.session.completed"){
         console.log("Order Completed")
-            //ToDo:
+          card(event.data.payment_method_types);
+          console.log("Order Completed",event.toString())
+          res.status(200).json({received: true, order,event});
+          }
+          else{
+            console.log(`Unhandled event type ${event.type}.`);
+            res.sendStatus(403);
+          }
+    // Return a 200 res to acknowledge receipt of the event
+  });
+const card= async(method=null)=>{
+  //ToDo:
           // 1- Check if the user has a cart
           // 2- Create a new order with total order price from the cart items
           // 3- increment the product sold field in the product collection, and decrement the quantity field
@@ -140,7 +151,7 @@ const createOnlineOrder=catchError(async (req, res) => {
             orderItems:cart.cartItems,
             totalOrderPrice:cart.totalPriceAfterDiscount,
             shippingAddress:req.body.shippingAddress,
-            paymentType:'cash'
+            paymentType:method||'cash'
           });
           order=await order.save();
           let options=cart.cartItems.map(item=>{
@@ -153,13 +164,6 @@ const createOnlineOrder=catchError(async (req, res) => {
           })// options return array of operations to be done on the products
           await productModel.bulkWrite(options)
           await cartModel.findOneAndDelete({ user: req.user._id });
-          res.status(200).json({received: true, order,event});
-          }
-          else{
-            console.log(`Unhandled event type ${event.type}.`);
-            res.sendStatus(403);
-          }
-    // Return a 200 res to acknowledge receipt of the event
-    
-  });
+          
+}
 export default { createCashOrder,getUserOrder,getAllOrders,createCheckOutSession,createOnlineOrder}; 
