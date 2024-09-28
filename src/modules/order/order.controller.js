@@ -122,27 +122,17 @@ const createOnlineOrder=catchError((req, res) => {
         return res.sendStatus(400);
       }
     }
-    // Handle the event
     
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
-        console.log(`PaymentIntent for ${paymentIntent.amount} was successful!`);
-        // Then define and call a method to handle the successful payment intent.
-        // handlePaymentIntentSucceeded(paymentIntent);
-        console.log("Payment Succeeded: "+paymentIntent)
-        break;
-      case 'payment_method.attached':
-        const paymentMethod = event.data.object;
-        // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        // handlePaymentMethodAttached(paymentMethod);
-        break;
-      default:
-        // Unexpected event type
+      if(event.type==="checkout.session.completed"){
+        console.log("Order Completed")
+        console.log("RawData::"+event.data)
+        console.log("DataObject::"+event.data.object)
+
+      }
+      else{
         console.log(`Unhandled event type ${event.type}.`);
-    }
-  
+      }
     // Return a 200 res to acknowledge receipt of the event
-    res.send();
+    res.status(200).send();
   });
 export default { createCashOrder,getUserOrder,getAllOrders,createCheckOutSession,createOnlineOrder}; 
