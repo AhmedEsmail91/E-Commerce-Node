@@ -102,8 +102,9 @@ const createCheckOutSession=catchError(async(req,res,next)=>{
   })
   res.status(200).json({status:"success",session})
 })
-const endpointSecret = 'whsec_zPfbrjM3IIgu7I9ckBDAV1SuPSi2CJtq';
+
 const createOnlineOrder=catchError((req, res) => {
+    let endpointSecret = 'whsec_zPfbrjM3IIgu7I9ckBDAV1SuPSi2CJtq';
     let event = req.body;
     // Only verify the event if you have an endpoint secret defined.
     // Otherwise use the basic event deserialized with JSON.parse
